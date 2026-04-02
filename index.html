@@ -133,27 +133,27 @@
         const res = await fetch(`https://ntfy.sh/${TOPIC}`, {
           method: "POST",
           body: MESSAGE,
-          headers: { "Title": "Message" }
+          headers: { "Title": "Taso" }
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         btn.textContent = "გაიგზავნა";
-        btn.className = "წარმატებით მოეშალა ნერვები";
-        status.textContent = "delivered";
+        btn.className = "success";
+        status.textContent = "ნერვები მოშლილია";
         status.className = "success";
 
       } catch (err) {
-        btn.textContent = "send";
+        btn.textContent = "გაგზავნა";
         btn.className = "error";
-        status.textContent = "failed — check connection";
+        status.textContent = "რაღაცა ერორია";
         status.className = "error";
 
       } finally {
         // Re-enable after 2s
         setTimeout(() => {
           btn.disabled = false;
-          btn.textContent = "send";
+          btn.textContent = "გაგზავნა";
           btn.className = "";
           status.textContent = "";
           status.className = "";
