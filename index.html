@@ -101,7 +101,7 @@
 </head>
 <body>
 
-  <h1>ping nine</h1>
+  <h1>მოუშალე საბას ნერვები</h1>
 
   <button id="ping-btn">send</button>
 
@@ -133,7 +133,7 @@
         const res = await fetch(`https://ntfy.sh/${TOPIC}`, {
           method: "POST",
           body: MESSAGE,
-          headers: { "Title": "ping" }
+          headers: { "Title": "Taso" }
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
