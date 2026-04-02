@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ping Nine</title>
+
+  <!-- PWA: tells the browser this is installable -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0a0a0a;
+      --surface: #111111;
+      --border:  #222222;
+      --text:    #e0e0e0;
+      --muted:   #555555;
+      --accent:  #39ff85;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: clamp(0.75rem, 3vw, 0.9rem);
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    #ping-btn {
+      width: clamp(140px, 40vw, 180px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+      position: relative;
+      outline: none;
+    }
+
+    #ping-btn:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 24px rgba(57, 255, 133, 0.15);
+    }
+
+    #ping-btn:active {
+      transform: scale(0.96);
+    }
+
+    #ping-btn.sending {
+      border-color: var(--accent);
+      box-shadow: 0 0 32px rgba(57, 255, 133, 0.25);
+      color: var(--accent);
+    }
+
+    #ping-btn.success {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    #ping-btn.error {
+      border-color: #ff4444;
+      color: #ff4444;
+    }
+
+    #status {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      height: 1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    #status.success { color: var(--accent); }
+    #status.error   { color: #ff4444; }
+  </style>
+</head>
+<body>
+
+  <h1>ping nine</h1>
+
+  <button id="ping-btn">send</button>
+
+  <p id="status"></p>
+
+  <script>
+    // ── CONFIG ──────────────────────────────────────────────────────────────
+    // Replace with your own secret topic name.
+    // Anyone who knows this string can send you a notification,
+    // so make it long and random.
+    const TOPIC = "your-secret-topic-here";
+    const MESSAGE = "your friend pressed the button";
+    // ────────────────────────────────────────────────────────────────────────
+
+    const btn = document.getElementById("ping-btn");
+    const status = document.getElementById("status");
+
+    btn.addEventListener("click", async () => {
+      if (btn.disabled) return;
+
+      // Disable button while request is in flight
+      btn.disabled = true;
+      btn.textContent = "...";
+      btn.className = "sending";
+      status.textContent = "";
+      status.className = "";
+
+      try {
+        const res = await fetch(`https://ntfy.sh/${TOPIC}`, {
+          method: "POST",
+          body: MESSAGE,
+          headers: { "Title": "ping" }
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        btn.textContent = "sent";
+        btn.className = "success";
+        status.textContent = "delivered";
+        status.className = "success";
+
+      } catch (err) {
+        btn.textContent = "send";
+        btn.className = "error";
+        status.textContent = "failed — check connection";
+        status.className = "error";
+
+      } finally {
+        // Re-enable after 2s
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = "send";
+          btn.className = "";
+          status.textContent = "";
+          status.className = "";
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>
