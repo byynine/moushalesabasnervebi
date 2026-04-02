@@ -103,7 +103,7 @@
 
   <h1>მოუშალე საბას ნერვები</h1>
 
-  <button id="ping-btn">send</button>
+  <button id="ping-btn">გაგზავნა</button>
 
   <p id="status"></p>
 
@@ -125,7 +125,7 @@
       // Disable button while request is in flight
       btn.disabled = true;
       btn.textContent = "...";
-      btn.className = "sending";
+      btn.className = "იგზავნება";
       status.textContent = "";
       status.className = "";
 
@@ -138,8 +138,8 @@
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        btn.textContent = "sent";
-        btn.className = "success";
+        btn.textContent = "გაიგზავნა";
+        btn.className = "წარმატებით მოეშალა ნერვები";
         status.textContent = "delivered";
         status.className = "success";
 
